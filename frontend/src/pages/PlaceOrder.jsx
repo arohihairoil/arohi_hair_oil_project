@@ -84,58 +84,56 @@ const PlaceOrder = () => {
 
   // 🔹 Place Order
   const onSubmitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!token) {
-      toast.error("Please login again")
-      navigate('/login')
-      return
+      toast.error("Please login again");
+      navigate("/login");
+      return;
     }
 
     try {
-      let orderItems = []
+      let orderItems = [];
 
       for (const productId in cartItems) {
         if (cartItems[productId] > 0) {
           orderItems.push({
             productId,
-            quantity: cartItems[productId]
-          })
+            quantity: cartItems[productId],
+          });
         }
       }
 
       if (orderItems.length === 0) {
-        toast.error("Your cart is empty")
-        return
+        toast.error("Your cart is empty");
+        return;
       }
 
       const orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee
-      }
+        amount: getCartAmount() + delivery_fee,
+      };
 
       const response = await axios.post(
-        backendUrl + '/api/order/razorpay',
+        backendUrl + "/api/order/razorpay",
         orderData,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
-      )
+      );
 
       if (response.data.success) {
-        initPay(response.data.order)
+        initPay(response.data.order);
       } else {
-        toast.error(response.data.message)
+        toast.error(response.data.message);
       }
-
     } catch (error) {
-      toast.error("Order placement failed")
+      toast.error("Order placement failed");
     }
   }
-console.log("TOKEN:", token);
 
   return (
     <form onSubmit={onSubmitHandler} className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
