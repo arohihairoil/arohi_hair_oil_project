@@ -29,11 +29,19 @@ const Navbar = () => {
       {/* <Link to="/">
         <img src={assets.Arohi_Title_Header} className="w-40" alt="" />
       </Link> */}
-      <Link to="/">
+      {/* <Link to="/">
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide overflow-hidden whitespace-nowrap border-r-4 border-[#D81B60] text-[#D81B60] animate-[typing_3s_steps(20,end),blink_0.6s_infinite]">
           AROHI HAIR OIL
         </h1>
-      </Link>
+      </Link> */}
+
+      {
+        <Link to="/">
+          <h1 className="text-3xl md:text-4xl py-5 font-extrabold tracking-wide overflow-hidden whitespace-nowrap text-[#D81B60] animate-[typing_3s_steps(20,end),blink_0.6s_infinite]">
+            AROH HAIR OIL
+          </h1>
+        </Link>
+      }
 
       <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
         <NavLink to="/" className={style1}>
