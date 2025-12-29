@@ -11,16 +11,19 @@ const Footer = () => {
           <img
             src={assets.Footer_Title_image}
             className="mb-5 w-32"
-            alt="Footer Title"
+            alt="Arohi Hair Oil"
           />
+
           <p className="w-full md:w-2/3 text-gray-600 text-[19px]">
-            An Oil is Beneficial for All Hair Types
+            A gentle hair care oil formulated for regular use.
           </p>
+
           <p className="w-full md:w-2/3 text-gray-600 text-[19px]">
-            Included 16 most PowerFull Natural Ingredients
+            Crafted with carefully selected natural ingredients.
           </p>
+
           <p className="w-full md:w-2/3 text-gray-600 text-[19px]">
-            Natural Ayurvedic Hair Growth Oil
+            Natural-inspired hair oil for daily hair care.
           </p>
         </div>
 
@@ -49,23 +52,26 @@ const Footer = () => {
           </p>
           <ul className="flex flex-col gap-1 text-gray-600">
             <li>
-              <NavLink to="/payment-policy">Payment Policy</NavLink>
-            </li>
-            <li>
-              <NavLink to="/refund-policy">Refund Policy</NavLink>
-            </li>
-            <li>
-              <NavLink to="/return-policy">Return Policy</NavLink>
-            </li>
-            <li>
-              <NavLink to="/shipping-policy">Shipping Policy</NavLink>
-            </li>
-            <li>
               <NavLink to="/privacy-policy">Privacy Policy</NavLink>
             </li>
             <li>
               <NavLink to="/terms-and-conditions">Terms & Conditions</NavLink>
             </li>
+
+            <li>
+              <NavLink to="/cancellation-and-return-policy">
+                Cancellation and Return Policy
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/shipping-and-delivery">
+                shipping and delivery
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/payment-policy">Payment Policy</NavLink>
+            </li>
+
             <li>
               <NavLink to="/disclaimer">Disclaimer</NavLink>
             </li>

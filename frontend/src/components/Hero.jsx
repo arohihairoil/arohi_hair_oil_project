@@ -3,7 +3,7 @@ import { assets } from "../assets/assets";
 
 const Hero = () => {
   return (
-    <div className="flex flex-col sm:flex-row border border-gray-400">
+    <div className="flex flex-col sm:flex-row border border-gray-400 gap-5 mt-[5px]">
       {/* Hero Left Side */}
       <div className="w-full sm:w-1/2 flex items-center justify-center py-10 sm:py-0">
         <div className="text-[#414141]">
@@ -21,7 +21,11 @@ const Hero = () => {
         </div>
       </div>
       {/* Hero Right Side */}
-      <img className="w-full sm:w-1/2  scale-50" src={assets.HairOil_photo1} alt="" />
+      <img
+        className="w-full sm:w-[calc(50%+20px)] h-auto"
+        src={assets.about_product}
+        alt="product about product"
+      />
     </div>
   );
 };

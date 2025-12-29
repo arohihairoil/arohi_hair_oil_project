@@ -2,6 +2,7 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"; // ✅ ONLY ONCE
 import userModel from "../models/userModel.js";
+import { sendWelcomeEmail } from "../utils/sendWelcomeEmail.js";
 
 /* =====================
    TOKEN HELPER
@@ -31,7 +32,6 @@ const loginUser = async (req, res) => {
 
     const token = createToken(user._id);
     res.json({ success: true, token });
-
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -41,6 +41,7 @@ const loginUser = async (req, res) => {
 /* =====================
    USER REGISTER
 ===================== */
+
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -64,19 +65,25 @@ const registerUser = async (req, res) => {
     const newUser = new userModel({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     const user = await newUser.save();
+
+    // ✅ SEND WELCOME EMAIL HERE
+    sendWelcomeEmail(email, name).catch((err) =>
+      console.log("Email error:", err.message)
+    );
+
     const token = createToken(user._id);
 
     res.json({ success: true, token });
-
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
 };
+
 
 /* =====================
    FORGOT PASSWORD

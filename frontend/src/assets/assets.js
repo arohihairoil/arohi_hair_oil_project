@@ -20,27 +20,29 @@ import cross_icon from './cross_icon.png'
 import HairOil_photo1 from "./HairOil_photo1.jpeg"
 import Footer_Title_image from "./Footer_Title_image.png"
 import Arohi_Title_Header from "./Arohi_Title_Header.png"
+import about_product from "./about_product.png";
 
 export const assets = {
-    logo,
-    hero_img,
-    cart_icon,
-    dropdown_icon,
-    exchange_icon,
-    profile_icon,
-    quality_icon,
-    search_icon,
-    star_dull_icon,
-    star_icon,
-    bin_icon,
-    support_img,
-    menu_icon,
-    about_img,
-    contact_img,
-    razorpay_logo,
-    stripe_logo,
-    cross_icon,
-    HairOil_photo1,
-    Footer_Title_image,
-    Arohi_Title_Header
-}
+  logo,
+  hero_img,
+  cart_icon,
+  dropdown_icon,
+  exchange_icon,
+  profile_icon,
+  quality_icon,
+  search_icon,
+  star_dull_icon,
+  star_icon,
+  bin_icon,
+  support_img,
+  menu_icon,
+  about_img,
+  contact_img,
+  razorpay_logo,
+  stripe_logo,
+  cross_icon,
+  HairOil_photo1,
+  Footer_Title_image,
+  Arohi_Title_Header,
+  about_product,
+};
