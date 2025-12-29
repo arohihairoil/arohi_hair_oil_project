@@ -17,7 +17,7 @@ const Footer = () => {
             An Oil is Beneficial for All Hair Types
           </p>
           <p className="w-full md:w-2/3 text-gray-600 text-[19px]">
-            Included 16 Natural Herbs
+            Included 16 most PowerFull Natural Ingredients
           </p>
           <p className="w-full md:w-2/3 text-gray-600 text-[19px]">
             Natural Ayurvedic Hair Growth Oil

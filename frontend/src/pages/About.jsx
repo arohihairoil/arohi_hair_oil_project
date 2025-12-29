@@ -24,7 +24,7 @@ const About = () => {
           </p>
           <p>
             Since our inception, we have worked tirelessly to craft a powerful
-            blend of herbs and oils that promote healthy hair growth and scalp
+            blend of Natural and oils that promote healthy hair growth and scalp
             care. Each ingredient is carefully selected to ensure quality,
             purity, and visible results.
           </p>
