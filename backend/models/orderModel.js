@@ -1,12 +1,10 @@
-
-
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: true,
     },
 
@@ -14,8 +12,23 @@ const orderSchema = new mongoose.Schema(
       {
         productId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'product',
+          ref: "product",
           required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        image: {
+          type: [String],
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        size: {
+          type: String,
         },
         quantity: {
           type: Number,
@@ -36,7 +49,7 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      default: 'Order Placed',
+      default: "Order Placed",
     },
 
     paymentMethod: {
@@ -49,18 +62,17 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
 
-    // ✅ ADD THIS (for frontend compatibility)
     date: {
       type: Number,
       default: Date.now,
     },
   },
   {
-    timestamps: true, // still keeps createdAt & updatedAt
+    timestamps: true,
   }
 );
 
 const orderModel =
-  mongoose.models.order || mongoose.model('order', orderSchema);
+  mongoose.models.order || mongoose.model("order", orderSchema);
 
 export default orderModel;

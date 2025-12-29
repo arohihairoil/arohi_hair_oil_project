@@ -17,43 +17,88 @@ const razorpayInstance = new razorpay({
 /* ===========================
    RAZORPAY ORDER (ACTIVE)
 =========================== */
+// const placeOrderRazorpay = async (req, res) => {
+//     try {
+//          const userId = req.userId; // ✅ FIX
+
+//         const { items, amount, address } = req.body
+
+//         const orderData = {
+//             userId,
+//             items,
+//             address,
+//             amount,
+//             paymentMethod: "Razorpay",
+//             payment: false,
+//         }
+
+//         const newOrder = new orderModel(orderData)
+//         await newOrder.save()
+
+//         const options = {
+//             amount: amount * 100,
+//             currency: currency.toUpperCase(),
+//             receipt: newOrder._id.toString()
+//         }
+
+//         razorpayInstance.orders.create(options, (error, order) => {
+//             if (error) {
+//                 console.log(error)
+//                 return res.json({ success: false, message: error })
+//             }
+//             res.json({ success: true, order })
+//         })
+
+//     } catch (error) {
+//         console.log(error)
+//         res.json({ success: false, message: error.message })
+//     }
+// }
+
 const placeOrderRazorpay = async (req, res) => {
-    try {
-         const userId = req.userId; // ✅ FIX
+  try {
+    const userId = req.userId;
 
-        const { items, amount, address } = req.body
+    const { items, amount, address } = req.body;
 
-        const orderData = {
-            userId,
-            items,
-            address,
-            amount,
-            paymentMethod: "Razorpay",
-            payment: false,
-        }
-
-        const newOrder = new orderModel(orderData)
-        await newOrder.save()
-
-        const options = {
-            amount: amount * 100,
-            currency: currency.toUpperCase(),
-            receipt: newOrder._id.toString()
-        }
-
-        razorpayInstance.orders.create(options, (error, order) => {
-            if (error) {
-                console.log(error)
-                return res.json({ success: false, message: error })
-            }
-            res.json({ success: true, order })
-        })
-
-    } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: error.message })
+    if (!items || items.length === 0) {
+      return res.json({ success: false, message: "No items in order" });
     }
-}
+
+    // ✅ Items already contain name, image, price (from frontend)
+    const orderData = {
+      userId,
+      items,
+      address,
+      amount,
+      paymentMethod: "Razorpay",
+      payment: false,
+    };
+
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
+
+    const options = {
+      amount: amount * 100, // Razorpay needs paise
+      currency: "INR",
+      receipt: newOrder._id.toString(),
+    };
+
+    razorpayInstance.orders.create(options, (error, order) => {
+      if (error) {
+        console.log(error);
+        return res.json({ success: false, message: "Razorpay order failed" });
+      }
+
+      res.json({ success: true, order });
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
 
 const verifyRazorpay = async (req, res) => {
     try {

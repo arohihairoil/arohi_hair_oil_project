@@ -67,64 +67,84 @@ const Orders = ({ token }) => {
     <div>
       <h3>Order Page</h3>
       <div>
-        {
-          orders.map((order, index) => (
-            <div
-              className='grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700'
-              key={index}
-            >
-              <img className='w-12' src={assets.parcel_icon} alt="" />
+        {orders.map((order, index) => (
+          <div
+            className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
+            key={index}
+          >
+            <div className="flex flex-col gap-3 max-w-full sm:max-w-[280px]">
+              {order.items.map((item, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <img
+                    src={item.image?.[0]}
+                    alt={item.name}
+                    className="w-14 h-14 object-cover border rounded flex-shrink-0"
+                  />
 
-              <div>
-                <div>
-                  {order.items.map((item, i) => (
-                    <p className='py-0.5' key={i}>
-                      {item.name} x {item.quantity} <span>{item.size}</span>
+                  <div className="overflow-hidden">
+                    <p className="font-medium break-words leading-snug">
+                      {item.name}
                     </p>
-                  ))}
+                    <p className="text-xs text-gray-600 truncate">
+                      Qty: {item.quantity} {item.size && `| Size: ${item.size}`}
+                    </p>
+                  </div>
                 </div>
+              ))}
+            </div>
 
-                <p className='mt-3 mb-2 font-medium'>
-                  {order.address.firstName} {order.address.lastName}
-                </p>
-
-                <div>
-                  <p>{order.address.street},</p>
-                  <p>
-                    {order.address.city}, {order.address.state}, {order.address.country}, {order.address.zipcode}
-                  </p>
-                </div>
-
-                <p>{order.address.phone}</p>
-              </div>
+            {/* Customer + Address Info */}
+            <div>
+              <p className="mt-3 mb-2 font-medium">
+                {order.address.firstName} {order.address.lastName}
+              </p>
 
               <div>
-                <p className='text-sm sm:text-[15px]'>Items : {order.items.length}</p>
-                <p className='mt-3'>Method : {order.paymentMethod}</p>
-                <p>Payment : {order.payment ? 'Done' : 'Pending'}</p>
-                <p>Date : {new Date(order.createdAt).toLocaleDateString('en-IN')}</p>
+                <p>{order.address.street},</p>
+                <p>
+                  {order.address.city}, {order.address.state},{" "}
+                  {order.address.country}, {order.address.zipcode}
+                </p>
               </div>
 
-              <p className='text-sm sm:text-[15px]'>{currency}{order.amount}</p>
-
-              <select
-                onChange={(event) => statusHandler(event, order._id)}
-                value={order.status}
-                className='p-2 font-semibold'
-              >
-                <option value="Order Placed">Order Placed</option>
-                <option value="Packing">Packing</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Out for delivery">Out for delivery</option>
-                <option value="Delivered">Delivered</option>
-              </select>
-
+              <p>{order.address.phone}</p>
             </div>
-          ))
-        }
+
+            {/* Order Meta Info */}
+            <div>
+              <p className="text-sm sm:text-[15px]">
+                Items : {order.items.length}
+              </p>
+              <p className="mt-3">Method : {order.paymentMethod}</p>
+              <p>Payment : {order.payment ? "Done" : "Pending"}</p>
+              <p>
+                Date : {new Date(order.createdAt).toLocaleDateString("en-IN")}
+              </p>
+            </div>
+
+            {/* Total Amount */}
+            <p className="text-sm sm:text-[15px]">
+              {currency}
+              {order.amount}
+            </p>
+
+            {/* Order Status */}
+            <select
+              onChange={(event) => statusHandler(event, order._id)}
+              value={order.status}
+              className="p-2 font-semibold"
+            >
+              <option value="Order Placed">Order Placed</option>
+              <option value="Packing">Packing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Out for delivery">Out for delivery</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </div>
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default Orders
