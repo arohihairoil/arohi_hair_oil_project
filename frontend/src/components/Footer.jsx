@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Footer = () => {
-  const [visible, setVisible] = useState(false);
-
   return (
     <div>
-      <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-40 text-sm">
+      <div className="flex flex-col sm:grid grid-cols-[2.5fr_2fr_1.5fr_1.5fr] gap-14 my-10 mt-40 text-sm">
+        {/* 1️⃣ Brand Column */}
         <div>
           <img
             src={assets.Footer_Title_image}
@@ -25,40 +24,64 @@ const Footer = () => {
           </p>
         </div>
 
+        {/* 2️⃣ Address Column */}
         <div>
-          <p className="text-xl font-medium mb-5 text-[#D81B60] text-[22px]">
-            AROHI{" "}
+          <p className="text-xl font-medium mb-5 text-[#D81B60] text-[20px]">
+            REGISTERED ADDRESS
+          </p>
+          <p className="text-gray-600 leading-relaxed">
+            Arohi Hair Oil
+            <br />
+            D.No. 4-2-70/A, D.B Colony,
+            <br />
+            Hindupur, Sri Sathya Sai District,
+            <br />
+            Andhra Pradesh – 515201,
+            <br />
+            India
+          </p>
+        </div>
+
+        {/* 3️⃣ Policies Column */}
+        <div>
+          <p className="text-xl font-medium mb-5 text-[#D81B60] text-[20px]">
+            AROHI
           </p>
           <ul className="flex flex-col gap-1 text-gray-600">
             <li>
-              <NavLink onClick={() => setVisible(false)} to="/">
-                HOME
-              </NavLink>
+              <NavLink to="/payment-policy">Payment Policy</NavLink>
             </li>
             <li>
-              <NavLink onClick={() => setVisible(false)} to="/about">
-                ABOUT US
-              </NavLink>
+              <NavLink to="/refund-policy">Refund Policy</NavLink>
             </li>
             <li>
-              <NavLink onClick={() => setVisible(false)} to="/contact">
-                CONTACT
-              </NavLink>
+              <NavLink to="/return-policy">Return Policy</NavLink>
+            </li>
+            <li>
+              <NavLink to="/shipping-policy">Shipping Policy</NavLink>
+            </li>
+            <li>
+              <NavLink to="/privacy-policy">Privacy Policy</NavLink>
+            </li>
+            <li>
+              <NavLink to="/terms-and-conditions">Terms & Conditions</NavLink>
+            </li>
+            <li>
+              <NavLink to="/disclaimer">Disclaimer</NavLink>
             </li>
           </ul>
         </div>
 
+        {/* 4️⃣ Contact Column */}
         <div>
           <p className="text-xl font-medium mb-5 text-[#D81B60] text-[20px]">
             GET IN TOUCH
           </p>
           <ul className="flex flex-col gap-1 text-gray-600">
-            {/* <li>+91 7207085598</li> */}
             <li>
-              {" "}
-              Chat with us : &nbsp;&nbsp;
+              Chat with us:&nbsp;
               <a
-                href="https://wa.me/917207085598?text=Welcome%20to%20Arohi%20Hair%20Oil!%20How%20can%20I%20help%20you%3F"
+                href="https://wa.me/917207085598"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:underline"
@@ -66,15 +89,10 @@ const Footer = () => {
                 +91 7207085598
               </a>
             </li>
-
-            {/* <li>arohihairoilsra@gmail.com</li> */}
             <li>
-              {" "}
-              Email : &nbsp;&nbsp;
+              Email:&nbsp;
               <a
-                href="mailto:arohihairoilsra@gmail.com?subject=Inquiry%20from%20Arohi%20Website&body=Hello%20Arohi%20Team,%0D%0A%0D%0AI%20would%20like%20to%20know%20more%20about%20your%20products.%0D%0A%0D%0AThank%20you."
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:arohihairoilsra@gmail.com"
                 className="hover:underline"
               >
                 arohihairoilsra@gmail.com
@@ -84,13 +102,11 @@ const Footer = () => {
         </div>
       </div>
 
-      <div>
-        <hr />
-        <p className="py-5 text-lg text-center text-[20px]">
-          Copyright 2026@<b className="text-[#D81B60]"> AROHI HAIR OIL</b> - All
-          Right Reserved.
-        </p>
-      </div>
+      <hr />
+      <p className="py-5 text-lg text-center text-[20px]">
+        © 2025 <b className="text-[#D81B60]">AROHI HAIR OIL</b>. All Rights
+        Reserved.
+      </p>
     </div>
   );
 };

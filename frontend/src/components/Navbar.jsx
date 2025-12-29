@@ -26,19 +26,10 @@ const Navbar = () => {
 
   return (
     <div className="flex items-center justify-between py-17 font-medium">
-      {/* <Link to="/">
-        <img src={assets.Arohi_Title_Header} className="w-40" alt="" />
-      </Link> */}
-      {/* <Link to="/">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide overflow-hidden whitespace-nowrap border-r-4 border-[#D81B60] text-[#D81B60] animate-[typing_3s_steps(20,end),blink_0.6s_infinite]">
-          AROHI HAIR OIL
-        </h1>
-      </Link> */}
-
       {
         <Link to="/">
           <h1 className="text-3xl md:text-4xl py-5 font-extrabold tracking-wide overflow-hidden whitespace-nowrap text-[#D81B60] animate-[typing_3s_steps(20,end),blink_0.6s_infinite]">
-            AROH HAIR OIL
+            AROHI HAIR OIL
           </h1>
         </Link>
       }
