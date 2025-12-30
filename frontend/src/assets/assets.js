@@ -21,6 +21,7 @@ import HairOil_photo1 from "./HairOil_photo1.jpeg"
 import Footer_Title_image from "./Footer_Title_image.png"
 import Arohi_Title_Header from "./Arohi_Title_Header.png"
 import about_product from "./about_product.png";
+import Latest_collection from "./Latest_collection.jpg";
 
 export const assets = {
   logo,
@@ -45,4 +46,5 @@ export const assets = {
   Footer_Title_image,
   Arohi_Title_Header,
   about_product,
+  Latest_collection,
 };
