@@ -109,9 +109,9 @@ const Footer = () => {
       </div>
 
       <hr />
-      <p className="py-5 text-lg text-center">
-        © 2025 <b className="text-[#D81B60]">Arohi Hair Oil</b> — A brand of{" "}
-        <b>Arohi Enterprises</b>. All Rights Reserved.
+      <p className="py-5 text-lg text-center text-[20px]">
+        © 2025 <b className="text-[#D81B60]">AROHI HAIR OIL</b>. All Rights
+        Reserved.
       </p>
     </div>
   );
