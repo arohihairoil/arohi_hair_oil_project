@@ -98,10 +98,10 @@ const Footer = () => {
             <li>
               Email:&nbsp;
               <a
-                href="mailto:arohihairoilsra1@gmail.com"
+                href="mailto:arohihairoilsra@gmail.com"
                 className="hover:underline"
               >
-                arohihairoilsra1@gmail.com
+                arohihairoilsra@gmail.com
               </a>
             </li>
           </ul>

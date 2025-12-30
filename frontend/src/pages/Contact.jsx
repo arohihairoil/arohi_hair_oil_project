@@ -20,7 +20,7 @@ const Contact = () => {
             Andhra Pradesh - 515201
           </p>
           <p className=" text-gray-500 text-[19px]">
-            Phone Number : 7207085598 <br /> Email: arohihairoilsra1@gmail.com
+            Phone Number : 7207085598 <br /> Email: arohihairoilsra@gmail.com
           </p>
         </div>
       </div>
