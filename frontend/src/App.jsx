@@ -55,7 +55,7 @@ const App = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route
-          path="/cancellation-refund-policy"
+          path="/cancellation-and-return-policy"
           element={<CancellationAndRefundPolicy />}
         />
         <Route
