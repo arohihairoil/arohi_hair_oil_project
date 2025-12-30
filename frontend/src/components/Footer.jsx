@@ -33,7 +33,7 @@ const Footer = () => {
             REGISTERED ADDRESS
           </p>
           <p className="text-gray-600 leading-relaxed">
-            Arohi Hair Oil
+            Arohi Enterprises
             <br />
             D.No. 4-2-70/A, D.B Colony,
             <br />
@@ -98,10 +98,10 @@ const Footer = () => {
             <li>
               Email:&nbsp;
               <a
-                href="mailto:arohihairoilsra@gmail.com"
+                href="mailto:arohihairoilsra1@gmail.com"
                 className="hover:underline"
               >
-                arohihairoilsra@gmail.com
+                arohihairoilsra1@gmail.com
               </a>
             </li>
           </ul>
@@ -109,9 +109,9 @@ const Footer = () => {
       </div>
 
       <hr />
-      <p className="py-5 text-lg text-center text-[20px]">
-        © 2025 <b className="text-[#D81B60]">AROHI HAIR OIL</b>. All Rights
-        Reserved.
+      <p className="py-5 text-lg text-center">
+        © 2025 <b className="text-[#D81B60]">Arohi Hair Oil</b> — A brand of{" "}
+        <b>Arohi Enterprises</b>. All Rights Reserved.
       </p>
     </div>
   );

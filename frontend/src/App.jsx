@@ -25,6 +25,8 @@ import Disclaimer from "./pages/Disclaimer";
 import Error from "./components/Error";
 import CancellationAndRefundPolicy from "./pages/CancellationAndRefundPolicy";
 import ShippingAndDeliveryPolicy from "./pages/ShippingAndDeliveryPolicy";
+import MyProfile from "./components/MyProfile";
+// import MyProfile from "./components/MyProfile";
 
 const App = () => {
   return (
@@ -36,6 +38,8 @@ const App = () => {
       <Routes>
         {/* Main Pages */}
         <Route path="/" element={<Home />} />
+        <Route path="/myprofile" element={<MyProfile />} />
+
         <Route path="/collection" element={<Collection />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
@@ -46,6 +50,7 @@ const App = () => {
         <Route path="/orders" element={<Orders />} />
         <Route path="/verify" element={<Verify />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
         {/* ✅ Policy Pages (Razorpay-ready) */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />

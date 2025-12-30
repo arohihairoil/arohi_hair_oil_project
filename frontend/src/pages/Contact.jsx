@@ -15,12 +15,12 @@ const Contact = () => {
             Our Store Location :{" "}
           </p>
           <p className=" text-gray-500 text-[19px]">
-            Arohi Hair Oil
+            Arohi Enterprises
             <br /> D.No.4-2-70/A, D.B Colony, Hindupur <br /> Sathya Sai(D),
             Andhra Pradesh - 515201
           </p>
           <p className=" text-gray-500 text-[19px]">
-            Phone Number : 7207085598 <br /> Email: arohihairoilsra@gmail.com
+            Phone Number : 7207085598 <br /> Email: arohihairoilsra1@gmail.com
           </p>
         </div>
       </div>

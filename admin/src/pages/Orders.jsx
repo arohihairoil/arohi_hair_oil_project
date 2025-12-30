@@ -1,150 +1,312 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { backendUrl, currency } from '../App'
-import { toast } from 'react-toastify'
-import { assets } from '../assets/assets'
+// import React, { useEffect, useState } from 'react'
+// import axios from 'axios'
+// import { backendUrl, currency } from '../App'
+// import { toast } from "react-toastify";
+
+// const Orders = ({ token }) => {
+
+//   const [orders, setOrders] = useState([])
+
+//   const fetchAllOrders = async () => {
+
+//     if (!token) return
+
+//     try {
+//       const response = await axios.post(
+//         backendUrl + '/api/order/list',
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`   // ✅ FIX
+//           }
+//         }
+//       )
+
+//       if (response.data.success) {
+//         setOrders(response.data.orders.reverse())
+//       } else {
+//         toast.error(response.data.message)
+//       }
+
+//     } catch (error) {
+//       toast.error(error.response?.data?.message || error.message) // ✅ FIX
+//     }
+//   }
+
+//   const statusHandler = async (event, orderId) => {
+//     try {
+//       const response = await axios.post(
+//         backendUrl + '/api/order/status',
+//         {
+//           orderId,
+//           status: event.target.value
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}` // ✅ FIX
+//           }
+//         }
+//       )
+
+//       if (response.data.success) {
+//         fetchAllOrders()
+//       }
+
+//     } catch (error) {
+//       console.log(error)
+//       toast.error(error.response?.data?.message || error.message) // ✅ FIX
+//     }
+//   }
+
+//   useEffect(() => {
+//     fetchAllOrders()
+//   }, [token])
+
+//   return (
+//     <div>
+//       <h3>Order Page</h3>
+//       <div>
+//         {orders.map((order, index) => (
+//           <div
+//             className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
+//             key={index}
+//           >
+//             <div className="flex flex-col gap-3 max-w-full sm:max-w-[280px]">
+//               {order.items.map((item, i) => (
+//                 <div key={i} className="flex items-center gap-3">
+//                   <img
+//                     src={item.image?.[0]}
+//                     alt={item.name}
+//                     className="w-14 h-14 object-cover border rounded flex-shrink-0"
+//                   />
+
+//                   <div className="overflow-hidden">
+//                     <p className="font-medium break-words leading-snug">
+//                       {item.name}
+//                     </p>
+//                     <p className="text-xs text-gray-600 truncate">
+//                       Qty: {item.quantity} {item.size && `| Size: ${item.size}`}
+//                     </p>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+
+//             {/* Customer + Address Info */}
+//             <div>
+//               <p className="mt-3 mb-2 font-medium">
+//                 {order.address.firstName} {order.address.lastName}
+//               </p>
+
+//               <div>
+//                 <p>{order.address.street},</p>
+//                 <p>
+//                   {order.address.city}, {order.address.state},{" "}
+//                   {order.address.country}, {order.address.zipcode}
+//                 </p>
+//               </div>
+
+//               <p>{order.address.phone}</p>
+//             </div>
+
+//             {/* Order Meta Info */}
+//             <div>
+//               <p className="text-sm sm:text-[15px]">
+//                 Items : {order.items.length}
+//               </p>
+//               <p className="mt-3">Method : {order.paymentMethod}</p>
+//               <p>Payment : {order.payment ? "Done" : "Pending"}</p>
+//               <p>
+//                 Date : {new Date(order.createdAt).toLocaleDateString("en-IN")}
+//               </p>
+//             </div>
+
+//             {/* Total Amount */}
+//             <p className="text-sm sm:text-[15px]">
+//               {currency}
+//               {order.amount}
+//             </p>
+
+//             {/* Order Status */}
+//             <select
+//               onChange={(event) => statusHandler(event, order._id)}
+//               value={order.status}
+//               className="p-2 font-semibold"
+//             >
+//               <option value="Order Placed">Order Placed</option>
+//               <option value="Packing">Packing</option>
+//               <option value="Shipped">Shipped</option>
+//               <option value="Out for delivery">Out for delivery</option>
+//               <option value="Delivered">Delivered</option>
+//             </select>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Orders
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { backendUrl, currency } from "../App";
+import { toast } from "react-toastify";
 
 const Orders = ({ token }) => {
-
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState([]);
 
   const fetchAllOrders = async () => {
-
-    if (!token) return
+    if (!token) return;
 
     try {
       const response = await axios.post(
-        backendUrl + '/api/order/list',
+        backendUrl + "/api/order/list",
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`   // ✅ FIX
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
-      )
+      );
 
       if (response.data.success) {
-        setOrders(response.data.orders.reverse())
+        setOrders(response.data.orders.reverse());
       } else {
-        toast.error(response.data.message)
+        toast.error(response.data.message);
       }
-
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message) // ✅ FIX
+      toast.error(error.response?.data?.message || error.message);
     }
-  }
+  };
 
   const statusHandler = async (event, orderId) => {
     try {
       const response = await axios.post(
-        backendUrl + '/api/order/status',
+        backendUrl + "/api/order/status",
         {
           orderId,
-          status: event.target.value
+          status: event.target.value,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}` // ✅ FIX
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
-      )
+      );
 
       if (response.data.success) {
-        fetchAllOrders()
+        fetchAllOrders();
       }
-
     } catch (error) {
-      console.log(error)
-      toast.error(error.response?.data?.message || error.message) // ✅ FIX
+      toast.error(error.response?.data?.message || error.message);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchAllOrders()
-  }, [token])
+    fetchAllOrders();
+  }, [token]);
+
+  // ✅ GROUP ORDERS DATE-WISE (NO UI CHANGE)
+  const groupedOrders = orders.reduce((acc, order) => {
+    const date = new Date(order.createdAt).toLocaleDateString("en-IN");
+
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(order);
+    return acc;
+  }, {});
 
   return (
     <div>
       <h3>Order Page</h3>
-      <div>
-        {orders.map((order, index) => (
-          <div
-            className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
-            key={index}
-          >
-            <div className="flex flex-col gap-3 max-w-full sm:max-w-[280px]">
-              {order.items.map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <img
-                    src={item.image?.[0]}
-                    alt={item.name}
-                    className="w-14 h-14 object-cover border rounded flex-shrink-0"
-                  />
 
-                  <div className="overflow-hidden">
-                    <p className="font-medium break-words leading-snug">
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-600 truncate">
-                      Qty: {item.quantity} {item.size && `| Size: ${item.size}`}
-                    </p>
+      {Object.keys(groupedOrders).map((date) => (
+        <div key={date}>
+          {/* DATE HEADING */}
+          <h4 className="mt-6 mb-3 font-semibold text-gray-700">{date}</h4>
+
+          {/* ORDERS UNDER DATE */}
+          {groupedOrders[date].map((order, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
+            >
+              {/* PRODUCTS */}
+              <div className="flex flex-col gap-3 max-w-full sm:max-w-[280px]">
+                {order.items.map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <img
+                      src={item.image?.[0]}
+                      alt={item.name}
+                      className="w-14 h-14 object-cover border rounded flex-shrink-0"
+                    />
+
+                    <div className="overflow-hidden">
+                      <p className="font-medium break-words leading-snug">
+                        {item.name}
+                      </p>
+                      <p className="text-xs text-gray-600 truncate">
+                        Qty: {item.quantity}{" "}
+                        {item.size && `| Size: ${item.size}`}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Customer + Address Info */}
-            <div>
-              <p className="mt-3 mb-2 font-medium">
-                {order.address.firstName} {order.address.lastName}
-              </p>
-
-              <div>
-                <p>{order.address.street},</p>
-                <p>
-                  {order.address.city}, {order.address.state},{" "}
-                  {order.address.country}, {order.address.zipcode}
-                </p>
+                ))}
               </div>
 
-              <p>{order.address.phone}</p>
-            </div>
+              {/* CUSTOMER INFO */}
+              <div>
+                <p className="mt-3 mb-2 font-medium">
+                  {order.address.firstName} {order.address.lastName}
+                </p>
 
-            {/* Order Meta Info */}
-            <div>
+                <div>
+                  <p>{order.address.street},</p>
+                  <p>
+                    {order.address.city}, {order.address.state},{" "}
+                    {order.address.country}, {order.address.zipcode}
+                  </p>
+                </div>
+
+                <p>{order.address.phone}</p>
+              </div>
+
+              {/* META */}
+              <div>
+                <p className="text-sm sm:text-[15px]">
+                  Items : {order.items.length}
+                </p>
+                <p className="mt-3">Method : {order.paymentMethod}</p>
+                <p>Payment : {order.payment ? "Done" : "Pending"}</p>
+                <p>Date : {date}</p>
+              </div>
+
+              {/* AMOUNT */}
               <p className="text-sm sm:text-[15px]">
-                Items : {order.items.length}
+                {currency}
+                {order.amount}
               </p>
-              <p className="mt-3">Method : {order.paymentMethod}</p>
-              <p>Payment : {order.payment ? "Done" : "Pending"}</p>
-              <p>
-                Date : {new Date(order.createdAt).toLocaleDateString("en-IN")}
-              </p>
+
+              {/* STATUS */}
+              <select
+                onChange={(event) => statusHandler(event, order._id)}
+                value={order.status}
+                className="p-2 font-semibold"
+              >
+                <option value="Order Placed">Order Placed</option>
+                <option value="Packing">Packing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Out for delivery">Out for delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
             </div>
-
-            {/* Total Amount */}
-            <p className="text-sm sm:text-[15px]">
-              {currency}
-              {order.amount}
-            </p>
-
-            {/* Order Status */}
-            <select
-              onChange={(event) => statusHandler(event, order._id)}
-              value={order.status}
-              className="p-2 font-semibold"
-            >
-              <option value="Order Placed">Order Placed</option>
-              <option value="Packing">Packing</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Out for delivery">Out for delivery</option>
-              <option value="Delivered">Delivered</option>
-            </select>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
-}
+};
 
-export default Orders
+export default Orders;

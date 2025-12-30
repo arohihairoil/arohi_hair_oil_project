@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const {
     setShowSearch,
@@ -16,145 +18,173 @@ const Navbar = () => {
   } = useContext(ShopContext);
 
   const logout = () => {
-    navigate("/login");
     localStorage.removeItem("token");
     setToken("");
     setCartItems({});
+    navigate("/login");
   };
-  const style1 = "flex flex-col text-[#D81B60] items-center gap-1 text-[20px]";
-  const style2 = "w-2/4 border-none h-[1.5px] bg-[#D81B60] hidden";
+
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const navItem = "flex flex-col text-[#D81B60] items-center gap-1 text-[20px]";
+  const underline = "w-2/4 border-none h-[1.5px] bg-[#D81B60] hidden";
 
   return (
-    <div className="flex items-center justify-between py-17 font-medium">
-      {
-        <Link to="/">
-          <h1 className="text-3xl md:text-4xl py-5 font-extrabold tracking-wide overflow-hidden whitespace-nowrap text-[#D81B60] animate-[typing_3s_steps(20,end),blink_0.6s_infinite]">
-            AROHI HAIR OIL
-          </h1>
-        </Link>
-      }
+    <div className="relative z-50 flex items-center justify-between py-5 font-medium bg-white">
+      {/* LOGO */}
+      <Link to="/">
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide text-[#D81B60]">
+          AROHI HAIR OIL
+        </h1>
+      </Link>
 
+      {/* NAV LINKS */}
       <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
-        <NavLink to="/" className={style1}>
+        <NavLink to="/" className={navItem}>
           <p>HOME</p>
-          <hr className={style2} />
+          <hr className={underline} />
         </NavLink>
-
-        <NavLink to="/collection" className={style1}>
+        <NavLink to="/collection" className={navItem}>
           <p>COLLECTION</p>
-          <hr className={style2} />
+          <hr className={underline} />
         </NavLink>
-
-        <NavLink to="/about" className={style1}>
+        <NavLink to="/about" className={navItem}>
           <p>ABOUT</p>
-          <hr className={style2} />
+          <hr className={underline} />
         </NavLink>
-
-        <NavLink to="/contact" className={style1}>
+        <NavLink to="/contact" className={navItem}>
           <p>CONTACT</p>
-          <hr className={style2} />
+          <hr className={underline} />
         </NavLink>
       </ul>
 
-      <div className="flex items-center gap-6">
-        <img
+      {/* RIGHT ICONS */}
+      <div className="flex items-center gap-6 relative">
+        {/* SEARCH */}
+        {/* <img
           onClick={() => {
             setShowSearch(true);
             navigate("/collection");
           }}
           src={assets.search_icon}
           className="w-5 cursor-pointer"
-          alt=""
-        />
+          alt="search"
+        /> */}
 
-        <div className="group relative">
-          <img
-            onClick={() => (token ? null : navigate("/login"))}
-            className="w-5 cursor-pointer"
-            src={assets.profile_icon}
-            alt=""
-          />
-          {/* Dropdown Menu */}
-          {token && (
-            <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-              <div className="flex flex-col gap-2 w-36 py-3 px-5  bg-slate-100 text-gray-500 rounded">
-                {/* <p className='cursor-pointer hover:text-black'>My Profile</p> */}
-                <p
-                  onClick={() => navigate("/orders")}
-                  className="cursor-pointer hover:text-black"
-                >
-                  Orders
-                </p>
-                <p onClick={logout} className="cursor-pointer hover:text-black">
-                  Logout
-                </p>
-              </div>
+        {/* PROFILE */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() =>
+              token ? setProfileOpen(!profileOpen) : navigate("/login")
+            }
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <img src={assets.profile_icon} className="w-5" alt="profile" />
+          </button>
+
+          {token && profileOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md z-50">
+              <p
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  navigate("/myprofile");
+                  setProfileOpen(false);
+                }}
+              >
+                My Profile
+              </p>
+              <p
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  navigate("/orders");
+                  setProfileOpen(false);
+                }}
+              >
+                Orders
+              </p>
+              <p
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
+                onClick={logout}
+              >
+                Logout
+              </p>
             </div>
           )}
         </div>
+
+        {/* CART */}
         <Link to="/cart" className="relative">
-          <img src={assets.cart_icon} className="w-5 min-w-5" alt="" />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
+          <img src={assets.cart_icon} className="w-5" alt="cart" />
+          <span className="absolute -right-2 -bottom-2 w-4 h-4 text-[10px] bg-black text-white flex items-center justify-center rounded-full">
             {getCartCount()}
-          </p>
+          </span>
         </Link>
+
+        {/* MOBILE MENU */}
         <img
           onClick={() => setVisible(true)}
           src={assets.menu_icon}
           className="w-5 cursor-pointer sm:hidden"
-          alt=""
+          alt="menu"
         />
       </div>
 
-      {/* Sidebar menu for small screens */}
+      {/* MOBILE SIDEBAR */}
       <div
-        className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${
+        className={`fixed top-0 right-0 h-full bg-white z-50 transition-all ${
           visible ? "w-full" : "w-0"
         }`}
       >
         <div className="flex flex-col text-gray-600">
-          <div
-            onClick={() => setVisible(false)}
-            className="flex items-center gap-4 p-3 cursor-pointer"
-          >
-            <img className="h-4 rotate-180" src={assets.dropdown_icon} alt="" />
-            <p>Back</p>
+          <div onClick={() => setVisible(false)} className="p-4 cursor-pointer">
+            ← Back
           </div>
           <NavLink
             onClick={() => setVisible(false)}
-            className="py-2 pl-6 border"
+            className="p-4 border-b"
             to="/"
           >
             HOME
           </NavLink>
           <NavLink
             onClick={() => setVisible(false)}
-            className="py-2 pl-6 border"
+            className="p-4 border-b"
             to="/collection"
           >
             COLLECTION
           </NavLink>
           <NavLink
             onClick={() => setVisible(false)}
-            className="py-2 pl-6 border"
+            className="p-4 border-b"
             to="/about"
           >
             ABOUT
           </NavLink>
           <NavLink
             onClick={() => setVisible(false)}
-            className="py-2 pl-6 border"
+            className="p-4 border-b"
             to="/contact"
           >
             CONTACT
           </NavLink>
-          <NavLink
-            onClick={() => setVisible(false)}
-            className="py-2 pl-6 border"
-            to="/login"
-          >
-            LOGIN
-          </NavLink>
+          {!token && (
+            <NavLink
+              onClick={() => setVisible(false)}
+              className="p-4 border-b"
+              to="/login"
+            >
+              LOGIN
+            </NavLink>
+          )}
         </div>
       </div>
     </div>
