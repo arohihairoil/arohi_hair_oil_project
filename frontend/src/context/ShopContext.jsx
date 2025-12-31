@@ -323,6 +323,12 @@ const ShopContextProvider = (props) => {
 
   /* ---------------- CONTEXT VALUE ---------------- */
 
+  const logoutUser = () => {
+    setToken("");
+    setCartItems({});
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
   const value = {
     products,
     currency,
@@ -345,6 +351,7 @@ const ShopContextProvider = (props) => {
     token,
     setToken,
     setCartItems,
+    logoutUser,
   };
 
   return (

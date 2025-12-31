@@ -2,6 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+// const { logoutUser } = useContext(ShopContext);
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -17,10 +18,17 @@ const Navbar = () => {
     setCartItems,
   } = useContext(ShopContext);
 
-  const logout = () => {
-    localStorage.removeItem("token");
+  // const logout = () => {
+  //   localStorage.removeItem("token");
+  //   setToken("");
+  //   setCartItems({});
+  //   navigate("/login");
+  // };
+
+   const logoutUser = () => {
     setToken("");
     setCartItems({});
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -111,9 +119,10 @@ const Navbar = () => {
               >
                 Orders
               </p>
+
               <p
+                onClick={logoutUser}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
-                onClick={logout}
               >
                 Logout
               </p>
