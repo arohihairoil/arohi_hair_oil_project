@@ -9,14 +9,9 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const {
-    getCartCount,
-    navigate,
-    token,
-    logoutUser, // ✅ use from context
-  } = useContext(ShopContext);
+  const { getCartCount, navigate, token, logoutUser } = useContext(ShopContext);
 
-  // Close dropdown on outside click
+  /* ---------------- CLOSE PROFILE DROPDOWN ---------------- */
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -32,11 +27,11 @@ const Navbar = () => {
 
   return (
     <div>
-      <div>
-        {" "}
-        <Marquee />
-      </div>
-      <div className="relative z-50 flex items-center justify-between py-5 font-medium bg-white">
+      {/* TOP MARQUEE */}
+      <Marquee />
+
+      {/* NAVBAR */}
+      <div className="relative z-50 flex items-center justify-between py-5 font-medium bg-white px-4 sm:px-8">
         {/* LOGO */}
         <Link to="/">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide text-[#D81B60]">
@@ -44,7 +39,7 @@ const Navbar = () => {
           </h1>
         </Link>
 
-        {/* NAV LINKS */}
+        {/* DESKTOP NAV LINKS */}
         <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
           <NavLink to="/" className={navItem}>
             <p>HOME</p>
@@ -66,8 +61,8 @@ const Navbar = () => {
 
         {/* RIGHT ICONS */}
         <div className="flex items-center gap-6 relative">
-          {/* PROFILE */}
-          <div className="relative" ref={dropdownRef}>
+          {/* PROFILE (DESKTOP) */}
+          <div className="relative hidden sm:block" ref={dropdownRef}>
             <button
               onClick={() =>
                 token ? setProfileOpen(!profileOpen) : navigate("/login")
@@ -88,7 +83,6 @@ const Navbar = () => {
                 >
                   My Profile
                 </p>
-
                 <p
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
@@ -98,7 +92,6 @@ const Navbar = () => {
                 >
                   Orders
                 </p>
-
                 <p
                   onClick={logoutUser}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
@@ -117,7 +110,7 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* MOBILE MENU */}
+          {/* MOBILE MENU ICON */}
           <img
             onClick={() => setVisible(true)}
             src={assets.menu_icon}
@@ -125,58 +118,91 @@ const Navbar = () => {
             alt="menu"
           />
         </div>
+      </div>
 
-        {/* MOBILE SIDEBAR */}
-        <div
-          className={`fixed top-0 right-0 h-full bg-white z-50 transition-all ${
-            visible ? "w-full" : "w-0"
-          }`}
-        >
-          <div className="flex flex-col text-gray-600">
-            <div
-              onClick={() => setVisible(false)}
-              className="p-4 cursor-pointer"
-            >
-              ← Back
-            </div>
+      {/* MOBILE SIDEBAR */}
+      <div
+        className={`fixed top-0 right-0 h-full bg-white z-50 transition-all duration-300 ${
+          visible ? "w-full" : "w-0"
+        }`}
+      >
+        <div className="flex flex-col text-gray-700">
+          <div
+            onClick={() => setVisible(false)}
+            className="p-4 cursor-pointer font-semibold"
+          >
+            ← Back
+          </div>
+
+          <NavLink
+            onClick={() => setVisible(false)}
+            className="p-4 border-b"
+            to="/"
+          >
+            HOME
+          </NavLink>
+          <NavLink
+            onClick={() => setVisible(false)}
+            className="p-4 border-b"
+            to="/collection"
+          >
+            COLLECTION
+          </NavLink>
+          <NavLink
+            onClick={() => setVisible(false)}
+            className="p-4 border-b"
+            to="/about"
+          >
+            ABOUT
+          </NavLink>
+          <NavLink
+            onClick={() => setVisible(false)}
+            className="p-4 border-b"
+            to="/contact"
+          >
+            CONTACT
+          </NavLink>
+
+          {/* MOBILE AUTH OPTIONS */}
+          {!token && (
             <NavLink
               onClick={() => setVisible(false)}
               className="p-4 border-b"
-              to="/"
+              to="/login"
             >
-              HOME
+              LOGIN
             </NavLink>
-            <NavLink
-              onClick={() => setVisible(false)}
-              className="p-4 border-b"
-              to="/collection"
-            >
-              COLLECTION
-            </NavLink>
-            <NavLink
-              onClick={() => setVisible(false)}
-              className="p-4 border-b"
-              to="/about"
-            >
-              ABOUT
-            </NavLink>
-            <NavLink
-              onClick={() => setVisible(false)}
-              className="p-4 border-b"
-              to="/contact"
-            >
-              CONTACT
-            </NavLink>
-            {!token && (
+          )}
+
+          {token && (
+            <>
               <NavLink
                 onClick={() => setVisible(false)}
                 className="p-4 border-b"
-                to="/login"
+                to="/profile"
               >
-                LOGIN
+                MY PROFILE
               </NavLink>
-            )}
-          </div>
+
+              <NavLink
+                onClick={() => setVisible(false)}
+                className="p-4 border-b"
+                to="/orders"
+              >
+                ORDERS
+              </NavLink>
+
+              <button
+                onClick={() => {
+                  logoutUser();
+                  setVisible(false);
+                }}
+                className="p-4 text-left text-red-500 border-b"
+              >
+                LOGOUT
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

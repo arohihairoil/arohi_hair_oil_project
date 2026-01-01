@@ -5,11 +5,10 @@ const Hero = () => {
   return (
     <div
       className="
+        w-full
         flex flex-col sm:flex-row
-        border border-gray-300
-        gap-3 sm:gap-5
+        gap-3 sm:gap-1
         mt-[5px]
-        overflow-hidden
       "
     >
       {/* LEFT IMAGE */}
@@ -19,14 +18,9 @@ const Hero = () => {
         className="
           w-full
           sm:w-1/2
-
-          /* MOBILE */
           h-auto
-          object-contain
-
-          /* DESKTOP */
           sm:h-[420px]
-          sm:object-cover
+          object-contain
         "
         loading="eager"
         fetchPriority="high"
@@ -39,14 +33,9 @@ const Hero = () => {
         className="
           w-full
           sm:w-1/2
-
-          /* MOBILE */
           h-auto
-          object-contain
-
-          /* DESKTOP */
           sm:h-[420px]
-          sm:object-cover
+          object-contain
         "
         loading="eager"
         fetchPriority="high"

@@ -160,7 +160,7 @@ const ShopContextProvider = (props) => {
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
-      getUserCart(token);
+      // getUserCart(token);
       getUserProfile(token); // ✅ REQUIRED
     } else {
       setUser(null); // ✅ clear on logout
