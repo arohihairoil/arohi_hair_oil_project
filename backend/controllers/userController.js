@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"; // ✅ ONLY ONCE
 import userModel from "../models/userModel.js";
 import { sendWelcomeEmail } from "../utils/sendWelcomeEmail.js";
 
+
 /* =====================
    TOKEN HELPER
 ===================== */
@@ -84,7 +85,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 /* =====================
    FORGOT PASSWORD
 ===================== */
@@ -110,7 +110,6 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     res.json({ success: true, message: "Password updated successfully" });
-
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -138,10 +137,35 @@ const adminLogin = async (req, res) => {
     }
 
     return res.json({ success: false, message: "Invalid credentials" });
-
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
+  }
+};
+
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await userModel.findById(userId).select("name email"); // ✅ NEVER send password
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -152,5 +176,6 @@ export {
   loginUser,
   registerUser,
   adminLogin,
-  forgotPassword
+  forgotPassword,
+  getUserProfile
 };

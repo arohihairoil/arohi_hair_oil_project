@@ -1,6 +1,5 @@
 import React from 'react'
-import Title from '../components/Title'
-import { assets } from '../assets/assets'
+import Title from "../components/Title";
 
 const Contact = () => {
   return (

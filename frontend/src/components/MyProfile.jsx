@@ -1,16 +1,33 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ShopContext } from "../context/ShopContext";
+import { useNavigate } from "react-router-dom";
 
 const MyProfile = () => {
-  const { user } = useContext(ShopContext); 
-  // ⬆️ user should contain { name, email }
-  // password is NEVER fetched or shown
+  const { user, token } = useContext(ShopContext);
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 
+  /* ---------------- AUTH SAFETY ---------------- */
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
+  /* ---------------- LOADING STATE ---------------- */
+
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center text-gray-500">
+        Loading profile...
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-md mx-auto mt-16 p-6 border rounded">
+    <div className="max-w-md mx-auto mt-16 p-6 border rounded bg-white">
       <h1 className="text-2xl font-semibold text-[#D81B60] mb-6 text-center">
         My Profile
       </h1>
@@ -20,7 +37,7 @@ const MyProfile = () => {
         <label className="text-sm text-gray-600">Name</label>
         <input
           type="text"
-          value={user?.name || "User"}
+          value={user.name}
           disabled
           className="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
         />
@@ -31,7 +48,7 @@ const MyProfile = () => {
         <label className="text-sm text-gray-600">Email</label>
         <input
           type="email"
-          value={user?.email || "user@email.com"}
+          value={user.email}
           disabled
           className="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
         />
@@ -47,12 +64,13 @@ const MyProfile = () => {
           className="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed pr-10"
         />
 
-        <span
+        <button
+          type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-9 cursor-pointer text-gray-600"
+          className="absolute right-3 top-9 text-gray-600"
         >
           {showPassword ? <FaEyeSlash /> : <FaEye />}
-        </span>
+        </button>
       </div>
 
       <p className="text-xs text-gray-500 mt-4 text-center">

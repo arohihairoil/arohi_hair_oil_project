@@ -13,9 +13,20 @@ const About = () => {
       {/* ABOUT CONTENT */}
       <div className="my-10 flex flex-col md:flex-row gap-16">
         <img
-          className="w-1/2 md:max-w-[400px]"
           src={assets.HairOil_photo1}
-          alt="Arohi Hair Oil"
+          alt="Arohi Hair Oil – Natural Ayurvedic Hair Growth Oil"
+          loading="lazy"
+          decoding="async"
+          width="400"
+          height="400"
+          className="
+    w-full
+    max-w-[260px]
+    sm:max-w-[320px]
+    md:max-w-[400px]
+    h-auto
+    object-contain
+  "
         />
 
         <div className="flex flex-col justify-center gap-6 md:w-2/4 text-gray-600 text-[20px]">

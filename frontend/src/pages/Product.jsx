@@ -24,31 +24,55 @@ const Product = () => {
 
   return (
     <div className="border-t-2 pt-10 transition-opacity duration-500">
-      <div className="flex gap-12 flex-col sm:flex-row">
-        {/* Images */}
+      <div className="flex gap-10 flex-col sm:flex-row">
+        {/* IMAGE SECTION */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll sm:w-[18.7%] w-full">
+          {/* THUMBNAILS */}
+          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-auto sm:w-[18%] w-full gap-2">
             {productData.image.map((img, i) => (
               <img
                 key={i}
                 src={img}
                 onClick={() => setImage(img)}
-                className="w-[24%] sm:w-full sm:mb-3 cursor-pointer border"
-                alt="product"
+                loading="lazy"
+                decoding="async"
+                className="
+                  w-[22%] sm:w-full
+                  h-20 sm:h-24
+                  object-cover
+                  cursor-pointer
+                  border rounded
+                  flex-shrink-0
+                "
+                alt="product thumbnail"
               />
             ))}
           </div>
 
+          {/* MAIN IMAGE */}
           <div className="w-full sm:w-[80%]">
-            <img className="w-full h-auto rounded" src={image} alt="product" />
+            <img
+              src={image}
+              alt={productData.name}
+              loading="eager" // ✅ LCP image
+              fetchPriority="high"
+              decoding="async"
+              className="
+                w-full
+                h-[320px] sm:h-[420px] lg:h-[480px]
+                object-cover
+                rounded
+                border
+              "
+            />
           </div>
         </div>
 
-        {/* Product Info */}
+        {/* PRODUCT INFO */}
         <div className="flex-1">
           <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
 
-          {/* Rating */}
+          {/* RATING */}
           <div className="flex items-center gap-1 mt-2">
             {[...Array(5)].map((_, i) => (
               <img key={i} src={assets.star_icon} className="w-3" />
@@ -56,20 +80,20 @@ const Product = () => {
             <p className="pl-2 text-sm">(5/5)</p>
           </div>
 
-          {/* Price */}
+          {/* PRICE */}
           <p className="mt-5 text-3xl font-medium">
             {currency}
             {productData.price}
           </p>
 
-          {/* Description as points */}
+          {/* DESCRIPTION */}
           <ul className="list-disc pl-5 mt-4 space-y-2 text-gray-600">
             {productData.description.split("\n").map((point, index) => (
               <li key={index}>{point}</li>
             ))}
           </ul>
 
-          {/* Cart Actions */}
+          {/* CART ACTIONS */}
           <div className="mt-6 flex items-center gap-3">
             {!isInCart(productData._id) ? (
               <button
@@ -105,7 +129,7 @@ const Product = () => {
 
           <hr className="mt-8 sm:w-4/5" />
 
-          {/* Info */}
+          {/* INFO */}
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
             <p>100% original product made with natural ingredients.</p>
             <p>
@@ -116,7 +140,7 @@ const Product = () => {
         </div>
       </div>
 
-      {/* Related Products */}
+      {/* RELATED PRODUCTS */}
       <RelatedProducts
         category={productData.category}
         subCategory={productData.subCategory}

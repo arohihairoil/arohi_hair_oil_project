@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ShopContext } from '../context/ShopContext';
-import Title from '../components/Title';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { ShopContext } from "../context/ShopContext";
+import Title from "../components/Title";
+import axios from "axios";
 
 const Orders = () => {
   const { backendUrl, token, currency } = useContext(ShopContext);
@@ -19,7 +19,7 @@ const Orders = () => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ correct header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -32,9 +32,9 @@ const Orders = () => {
             allOrdersItem.push({
               ...item,
               status: order.status,
-              payment: order.payment,
+              payment: order.payment, // ✅ already present
               paymentMethod: order.paymentMethod,
-              createdAt: order.createdAt, // ✅ CHANGED (use createdAt),
+              createdAt: order.createdAt,
             });
           });
         });
@@ -44,7 +44,7 @@ const Orders = () => {
         setOrderData([]);
       }
     } catch (error) {
-      console.error('Error loading orders:', error);
+      console.error("Error loading orders:", error);
       setOrderData([]);
     } finally {
       setLoading(false);
@@ -77,16 +77,28 @@ const Orders = () => {
             key={index}
             className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
+            {/* LEFT SIDE */}
             <div className="flex items-start gap-6 text-sm">
               {item.image && (
                 <img
-                  className="w-16 sm:w-20"
                   src={item.image[0]}
                   alt={item.name}
+                  loading="lazy" // ✅ lazy load
+                  decoding="async" // ✅ faster render
+                  className="
+      w-14 h-14
+      sm:w-20 sm:h-20
+      object-cover
+      rounded
+      border
+      flex-shrink-0
+    "
                 />
               )}
+
               <div>
                 <p className="sm:text-base font-medium">{item.name}</p>
+
                 <div className="flex items-center gap-3 mt-1 text-base text-gray-700">
                   <p>
                     {currency}
@@ -94,29 +106,48 @@ const Orders = () => {
                   </p>
                   <p>Quantity: {item.quantity}</p>
                 </div>
+
                 <p className="mt-1">
                   Date:{" "}
                   <span className="text-gray-400">
                     {new Date(item.createdAt).toLocaleDateString("en-IN")}
-                    {/* ✅ CHANGED */}
                   </span>
                 </p>
 
-                <p className="mt-1">
-                  Payment:{" "}
-                  <span className="text-gray-400">{item.paymentMethod}</span>
-                </p>
                 <p className="text-gray-600 mt-1">
                   Time: {new Date(item.createdAt).toLocaleTimeString("en-IN")}
+                </p>
+
+                {/* ✅ PAYMENT STATUS (NEW – UI ONLY) */}
+                <div className="flex items-center gap-2 mt-2">
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      item.payment ? "bg-green-500" : "bg-orange-500"
+                    }`}
+                  ></span>
+
+                  <p
+                    className={`text-sm font-medium ${
+                      item.payment ? "text-green-600" : "text-orange-600"
+                    }`}
+                  >
+                    {item.payment ? "Payment Done" : "Payment Pending"}
+                  </p>
+                </div>
+
+                <p className="text-xs text-gray-500 mt-1">
+                  Method: {item.paymentMethod}
                 </p>
               </div>
             </div>
 
-            <div className="md:w-1/2 flex justify-between">
+            {/* RIGHT SIDE */}
+            <div className="md:w-1/2 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
+                <span className="w-2 h-2 rounded-full bg-green-500"></span>
                 <p className="text-sm md:text-base">{item.status}</p>
               </div>
+
               <button
                 onClick={loadOrderData}
                 className="border px-4 py-2 text-sm font-medium rounded-sm"
