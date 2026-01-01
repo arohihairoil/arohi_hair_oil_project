@@ -1,7 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { FaWhatsapp, FaEnvelope, FaInstagram, FaYoutube } from "react-icons/fa";
+import {
+  FaWhatsapp,
+  FaEnvelope,
+  FaInstagram,
+  FaYoutube,
+  FaFacebook,
+  FaFacebookF,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -122,6 +129,18 @@ const Footer = () => {
                 className="hover:underline"
               >
                 YouTube
+              </a>
+            </li>
+            <li className="flex item-center gap-3">
+              <FaFacebookF />
+              <a
+                href="https://www.facebook.com/roshani.khati.94?mibextid=ZbWKwL"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {" "}
+                Facebook
               </a>
             </li>
           </ul>
