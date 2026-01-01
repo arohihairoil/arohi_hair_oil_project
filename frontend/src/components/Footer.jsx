@@ -131,7 +131,7 @@ const Footer = () => {
       <hr />
 
       <p className="py-5 text-center text-base text-gray-600">
-        © 2025{" "}
+        © 2026{" "}
         <span className="font-semibold text-[#D81B60]">AROHI HAIR OIL</span>.
         All Rights Reserved.
       </p>
