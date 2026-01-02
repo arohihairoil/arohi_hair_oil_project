@@ -94,6 +94,57 @@ const ShopContextProvider = (props) => {
 
   const goToCart = () => navigate("/cart");
 
+  /* ---------------- USER CART ---------------- */
+  const getUserCart = async (userToken) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/cart/get",
+        {},
+        { headers: { Authorization: `Bearer ${userToken}` } }
+      );
+
+      if (response.data.success) {
+        setCartItems(response.data.cartData || {}); // ✅ REPLACE, NOT MERGE
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  /* ---------------- USER PROFILE ---------------- */
+  const getUserProfile = async (userToken) => {
+    try {
+      const response = await axios.get(backendUrl + "/api/user/profile", {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
+      if (response.data.success) {
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /* 🔴 THIS WAS THE MISSING PART (NOW FIXED) */
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+      // getUserCart(token);
+      getUserProfile(token); // ✅ REQUIRED
+    } else {
+      setUser(null); // ✅ clear on logout
+    }
+  }, [token]);
+
+  /* ---------------- LOGOUT ---------------- */
+  const logoutUser = () => {
+    setToken("");
+    setUser(null);
+    setCartItems({});
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   const value = {
     products,
     currency,
