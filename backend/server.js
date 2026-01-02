@@ -14,6 +14,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 connectDB();
 connectCloudinary();
+app.set("trust proxy", 1);
 
 // middlewares
 app.use(express.json());
@@ -26,8 +27,12 @@ app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 cleanupUnpaidOrders();
 
-app.get('/',(req,res)=>{
-    res.send("API Working")
-})
+app.get("/", (req, res) => {
+  res.send("API Working");
+});
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 
 app.listen(port, ()=> console.log('Server started on PORT : '+ port))
