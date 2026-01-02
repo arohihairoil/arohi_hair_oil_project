@@ -15,106 +15,106 @@ const createToken = (id) => {
 /* =====================
    USER LOGIN
 ===================== */
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+// const loginUser = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
-    const user = await userModel.findOne({ email });
+//     const user = await userModel.findOne({ email });
 
-    if (!user) {
-      return res.json({ success: false, message: "User doesn't exist" });
-    }
+//     if (!user) {
+//       return res.json({ success: false, message: "User doesn't exist" });
+//     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+//     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) {
-      return res.json({ success: false, message: "Invalid credentials" });
-    }
+//     if (!isMatch) {
+//       return res.json({ success: false, message: "Invalid credentials" });
+//     }
 
-    const token = createToken(user._id);
-    res.json({ success: true, token });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
-  }
-};
+//     const token = createToken(user._id);
+//     res.json({ success: true, token });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 
 /* =====================
    USER REGISTER
 ===================== */
 
-const registerUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
+// const registerUser = async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
 
-    const exists = await userModel.findOne({ email });
-    if (exists) {
-      return res.json({ success: false, message: "User already exists" });
-    }
+//     const exists = await userModel.findOne({ email });
+//     if (exists) {
+//       return res.json({ success: false, message: "User already exists" });
+//     }
 
-    if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: "Invalid email" });
-    }
+//     if (!validator.isEmail(email)) {
+//       return res.json({ success: false, message: "Invalid email" });
+//     }
 
-    if (password.length < 8) {
-      return res.json({ success: false, message: "Password too short" });
-    }
+//     if (password.length < 8) {
+//       return res.json({ success: false, message: "Password too short" });
+//     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new userModel({
-      name,
-      email,
-      password: hashedPassword,
-    });
+//     const newUser = new userModel({
+//       name,
+//       email,
+//       password: hashedPassword,
+//     });
 
-    const user = await newUser.save();
+//     const user = await newUser.save();
 
-    // ✅ SEND WELCOME EMAIL HERE
-    sendWelcomeEmail(email, name).catch((err) =>
-      console.log("Email error:", err.message)
-    );
+//     // ✅ SEND WELCOME EMAIL HERE
+//     sendWelcomeEmail(email, name).catch((err) =>
+//       console.log("Email error:", err.message)
+//     );
 
-    const token = createToken(user._id);
+//     const token = createToken(user._id);
 
-    res.json({ success: true, token });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
-  }
-};
+//     res.json({ success: true, token });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 
 /* =====================
    FORGOT PASSWORD
 ===================== */
-const forgotPassword = async (req, res) => {
-  try {
-    const { email, password, confirmPassword } = req.body;
+// const forgotPassword = async (req, res) => {
+//   try {
+//     const { email, password, confirmPassword } = req.body;
 
-    if (!email || !password || !confirmPassword) {
-      return res.json({ success: false, message: "All fields required" });
-    }
+//     if (!email || !password || !confirmPassword) {
+//       return res.json({ success: false, message: "All fields required" });
+//     }
 
-    if (password !== confirmPassword) {
-      return res.json({ success: false, message: "Passwords do not match" });
-    }
+//     if (password !== confirmPassword) {
+//       return res.json({ success: false, message: "Passwords do not match" });
+//     }
 
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.json({ success: false, message: "User not found" });
-    }
+//     const user = await userModel.findOne({ email });
+//     if (!user) {
+//       return res.json({ success: false, message: "User not found" });
+//     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    await user.save();
+//     const salt = await bcrypt.genSalt(10);
+//     user.password = await bcrypt.hash(password, salt);
+//     await user.save();
 
-    res.json({ success: true, message: "Password updated successfully" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
-  }
-};
+//     res.json({ success: true, message: "Password updated successfully" });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 
 /* =====================
    ADMIN LOGIN
@@ -173,9 +173,15 @@ const getUserProfile = async (req, res) => {
    EXPORTS
 ===================== */
 export {
-  loginUser,
-  registerUser,
+  
   adminLogin,
-  forgotPassword,
   getUserProfile
 };
+
+// export {
+//   loginUser,
+//   registerUser,
+//   adminLogin,
+//   forgotPassword,
+//   getUserProfile
+// };

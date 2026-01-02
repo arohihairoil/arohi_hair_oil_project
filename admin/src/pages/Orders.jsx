@@ -122,6 +122,7 @@ const Orders = ({ token }) => {
                   {order.address.country} - {order.address.zipcode}
                 </p>
                 <p className="text-xs text-gray-600">{order.address.phone}</p>
+                <p className="text-xs text-gray-600">{order.address.email}</p>
               </div>
 
               {/* META */}

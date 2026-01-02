@@ -1,6 +1,6 @@
 import orderModel from "../models/orderModel.js";
-import userModel from "../models/userModel.js";
 import razorpay from "razorpay";
+import { sendOrderSuccessEmail } from "../utils/sendOrderEmail.js";
 
 /* ===========================
    GLOBALS
@@ -19,70 +19,81 @@ const razorpayInstance = new razorpay({
 /* ===========================
    PLACE ORDER (RAZORPAY)
 =========================== */
+
+import productModel from "../models/productModel.js";
+
 const placeOrderRazorpay = async (req, res) => {
   try {
-    const userId = req.userId;
-    const { items, amount, address } = req.body;
+    const { items, address } = req.body;
 
     if (!items || items.length === 0) {
-      return res.json({ success: false, message: "No items in order" });
+      return res.status(400).json({
+        success: false,
+        message: "No items in order",
+      });
     }
 
-    const orderData = {
-      userId,
-      items,
-      address,
-      amount,
-      paymentMethod: "Razorpay",
-      payment: false,
-    };
+    // ✅ RE-CALCULATE AMOUNT ON SERVER
+    let serverAmount = 0;
 
-    const newOrder = new orderModel(orderData);
-    await newOrder.save();
+    for (const item of items) {
+      const product = await productModel.findById(item.productId);
 
-    const options = {
-      amount: amount * 100,
-      currency: "INR",
-      receipt: newOrder._id.toString(),
-    };
-
-    razorpayInstance.orders.create(options, (error, order) => {
-      if (error) {
-        console.log(error);
-        return res.json({
+      if (!product) {
+        return res.status(400).json({
           success: false,
-          message: "Razorpay order creation failed",
+          message: "Invalid product",
         });
       }
 
-      res.json({ success: true, order });
+      serverAmount += product.price * item.quantity;
+    }
+
+    const newOrder = new orderModel({
+      items,
+      address,
+      amount: serverAmount,
+      paymentMethod: "Razorpay",
+      payment: false,
     });
+
+    await newOrder.save();
+
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount: serverAmount * 100,
+      currency: "INR",
+      receipt: newOrder._id.toString(),
+    });
+
+    res.json({ success: true, order: razorpayOrder });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 /* ===========================
    VERIFY PAYMENT
 =========================== */
+
 const verifyRazorpay = async (req, res) => {
   try {
-    const userId = req.userId;
     const { razorpay_order_id } = req.body;
 
     const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
 
     if (orderInfo.status === "paid") {
-      // ✅ Update only once
-      await orderModel.findByIdAndUpdate(orderInfo.receipt, {
-        payment: true,
-      });
+      const order = await orderModel.findByIdAndUpdate(
+        orderInfo.receipt,
+        { payment: true },
+        { new: true }
+      );
 
-      // ✅ Clear user cart safely
-      await userModel.findByIdAndUpdate(userId, {
-        cartData: {},
-      });
+      // ✅ SEND EMAIL (NON-BLOCKING)
+      sendOrderSuccessEmail({
+        email: order.address.email,
+        orderId: order._id,
+        amount: order.amount,
+      }).catch((err) => console.log("Email failed:", err.message));
 
       return res.json({
         success: true,
@@ -92,8 +103,7 @@ const verifyRazorpay = async (req, res) => {
 
     res.json({ success: false, message: "Payment Failed" });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

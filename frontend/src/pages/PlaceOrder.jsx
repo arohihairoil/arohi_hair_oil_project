@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
@@ -10,12 +10,11 @@ const PlaceOrder = () => {
   const {
     navigate,
     backendUrl,
-    token,
     cartItems,
     setCartItems,
     getCartAmount,
     delivery_fee,
-    products, // ✅ REQUIRED (already exists in ShopContext)
+    products,
   } = useContext(ShopContext);
 
   const [formData, setFormData] = useState({
@@ -30,19 +29,11 @@ const PlaceOrder = () => {
     phone: "",
   });
 
-  // 🔹 Redirect if not logged in
-  useEffect(() => {
-    if (!token) {
-      toast.error("Please login to continue");
-      navigate("/login");
-    }
-  }, [token, navigate]);
-
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 🔹 Razorpay Init
+  /* ---------------- RAZORPAY INIT (GUEST) ---------------- */
   const initPay = (order) => {
     if (!window.Razorpay) {
       toast.error("Razorpay SDK not loaded");
@@ -53,22 +44,22 @@ const PlaceOrder = () => {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: order.currency,
-      name: "Order Payment",
+      name: "Arohi Hair Oil",
       description: "Order Payment",
       order_id: order.id,
       handler: async (response) => {
         try {
           const { data } = await axios.post(
-            backendUrl + "/api/order/verifyRazorpay",
-            response,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            `${backendUrl}/api/order/verifyRazorpay`,
+            response
           );
 
           if (data.success) {
             setCartItems({});
-            navigate("/orders");
+            toast.success("Order placed successfully");
+            navigate("/");
+          } else {
+            toast.error("Payment verification failed");
           }
         } catch {
           toast.error("Payment verification failed");
@@ -80,64 +71,160 @@ const PlaceOrder = () => {
     rzp.open();
   };
 
-  // 🔹 Place Order (FULLY FIXED)
+  /* ---------------- PLACE ORDER (GUEST) ---------------- */
+  // const onSubmitHandler = async (e) => {
+  //   e.preventDefault();
+
+  //   let orderItems = [];
+
+  //   for (const productId in cartItems) {
+  //     const quantity = cartItems[productId];
+  //     if (quantity > 0) {
+  //       const product = products.find((p) => p._id === productId);
+  //       if (product) {
+  //         orderItems.push({
+  //           productId: product._id,
+  //           name: product.name,
+  //           image: product.image,
+  //           price: product.price,
+  //           quantity,
+  //         });
+  //       }
+  //     }
+  //   }
+
+  //   if (orderItems.length === 0) {
+  //     toast.error("Your cart is empty");
+  //     return;
+  //   }
+
+  //   const orderData = {
+  //     address: formData,
+  //     items: orderItems,
+  //     amount: getCartAmount() + delivery_fee,
+  //   };
+
+  //   try {
+  //     const response = await axios.post(
+  //       `${backendUrl}/api/order/razorpay`,
+  //       orderData
+  //     );
+
+  //     if (!response.data.success) {
+  //       initPay(response.data.order);
+  //     } else {
+  //       toast.error(response.data.message || "Order failed");
+  //     }
+  //   } catch {
+  //     toast.error("Order placement failed");
+  //   }
+  // };
+
+  // const onSubmitHandler = async (e) => {
+  //   e.preventDefault();
+
+  //   let orderItems = [];
+
+  //   for (const productId in cartItems) {
+  //     const quantity = cartItems[productId];
+  //     if (quantity > 0) {
+  //       const product = products.find((p) => p._id === productId);
+  //       if (product) {
+  //         orderItems.push({
+  //           productId: product._id,
+  //           name: product.name,
+  //           image: product.image,
+  //           price: product.price,
+  //           quantity,
+  //         });
+  //       }
+  //     }
+  //   }
+
+  //   if (orderItems.length === 0) {
+  //     toast.error("Your cart is empty");
+  //     return;
+  //   }
+
+  //   const orderData = {
+  //     address: formData,
+  //     items: orderItems,
+  //     amount: getCartAmount() + delivery_fee,
+  //   };
+
+  //   const response = await axios.post(
+  //     `${backendUrl}/api/order/razorpay`,
+  //     orderData
+  //   );
+  //   console.log("ORDER API RESPONSE 👉", response.data);
+
+  //   if (response.data.success) {
+  //     // ✅ OPEN RAZORPAY
+  //     initPay(response.data.order);
+  //   } else {
+  //     toast.error(response.data.message || "Order failed");
+  //   }
+  // };
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      toast.error("Please login again");
-      navigate("/login");
+    // 🔴 IMPORTANT SAFETY CHECK
+    if (!products || products.length === 0) {
+      toast.error("Products are still loading. Please wait.");
       return;
     }
 
+    let orderItems = [];
+
+    for (const productId in cartItems) {
+      const quantity = cartItems[productId];
+
+      if (quantity > 0) {
+        const product = products.find((p) => p._id === productId);
+
+        if (!product) {
+          console.warn("Product not found:", productId);
+          continue;
+        }
+
+        orderItems.push({
+          productId: product._id,
+          name: product.name,
+          image: product.image,
+          price: product.price,
+          quantity,
+        });
+      }
+    }
+
+    console.log("ORDER ITEMS 👉", orderItems);
+
+    if (orderItems.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    const orderData = {
+      address: formData,
+      items: orderItems,
+      amount: getCartAmount() + delivery_fee,
+    };
+
     try {
-      let orderItems = [];
-
-      // ✅ FIX: cartItems stores quantity only → enrich using products list
-      for (const productId in cartItems) {
-        const quantity = cartItems[productId];
-
-        if (quantity > 0) {
-          const product = products.find((p) => p._id === productId);
-
-          if (product) {
-            orderItems.push({
-              productId: product._id,
-              name: product.name, // ✅ schema required
-              image: product.image, // ✅ schema required
-              price: product.price, // ✅ schema required
-              size: product.size, // optional
-              quantity: quantity, // ✅ correct quantity
-            });
-          }
-        }
-      }
-
-      if (orderItems.length === 0) {
-        toast.error("Your cart is empty");
-        return;
-      }
-
-      const orderData = {
-        address: formData,
-        items: orderItems, // ✅ FULL SNAPSHOT
-        amount: getCartAmount() + delivery_fee,
-      };
-
       const response = await axios.post(
-        backendUrl + "/api/order/razorpay",
-        orderData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `${backendUrl}/api/order/razorpay`,
+        orderData
       );
+
+      console.log("ORDER API RESPONSE 👉", response.data);
 
       if (response.data.success) {
         initPay(response.data.order);
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Order failed");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Order placement failed");
     }
   };
@@ -150,7 +237,7 @@ const PlaceOrder = () => {
       {/* LEFT */}
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="text-xl sm:text-2xl my-3">
-          <Title text1={"DELIVERY"} text2={"INFORMATION"} />
+          <Title text1="DELIVERY" text2="INFORMATION" />
         </div>
 
         <div className="flex gap-3">
@@ -207,7 +294,7 @@ const PlaceOrder = () => {
             name="zipcode"
             onChange={onChangeHandler}
             className="border rounded py-1.5 px-3.5 w-full"
-            placeholder="pincode"
+            placeholder="Pincode"
           />
           <input
             required
@@ -234,7 +321,7 @@ const PlaceOrder = () => {
         </div>
 
         <div className="mt-12">
-          <Title text1={"PAYMENT"} text2={"METHOD"} />
+          <Title text1="PAYMENT" text2="METHOD" />
           <div className="flex items-center gap-3 border p-3 mt-4">
             <img className="h-6" src={assets.razorpay_logo} alt="Razorpay" />
             <p className="text-sm font-medium">Secure Razorpay Payment</p>
