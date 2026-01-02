@@ -40,7 +40,7 @@ const App = () => {
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/place-order" element={<PlaceOrder />} />
-        <Route path="single/:orderID" element={<OrderSuccess />} />
+        <Route path="/single/:orderId" element={<OrderSuccess />} />
         <Route path="/orders" element={<Orders />} />
 
         {/* ✅ Policy Pages (Razorpay-ready) */}

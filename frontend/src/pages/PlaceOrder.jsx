@@ -106,8 +106,6 @@ const PlaceOrder = () => {
       }
     }
 
-    console.log("ORDER ITEMS 👉", orderItems);
-
     if (orderItems.length === 0) {
       toast.error("Your cart is empty");
       return;
@@ -124,8 +122,6 @@ const PlaceOrder = () => {
         `${backendUrl}/api/order/razorpay`,
         orderData
       );
-
-      console.log("ORDER API RESPONSE 👉", response.data);
 
       if (response.data.success) {
         initPay(response.data.order);

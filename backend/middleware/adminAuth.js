@@ -6,7 +6,10 @@ const adminAuth = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.json({ success: false, message: "Not Authorized Login Again" });
+      return res.json({
+        success: false,
+        message: "Not Authorized Login Again",
+      });
     }
 
     const token = authHeader.split(" ")[1];
@@ -19,7 +22,6 @@ const adminAuth = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     return res.json({ success: false, message: "Invalid or Expired Token" });
   }
 };

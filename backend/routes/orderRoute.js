@@ -5,6 +5,7 @@ import {
   verifyRazorpay,
   allOrders,
   updateStatus,
+  orderSuccess,
 } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
 
@@ -31,18 +32,6 @@ orderRouter.post("/status", adminAuth, updateStatus);
 ========================= */
 orderRouter.post("/razorpay", placeOrderRazorpay);
 orderRouter.post("/verifyRazorpay", verifyRazorpay);
-orderRouter.get("/single/:orderId", async (req, res) => {
-  try {
-    const order = await orderModel.findById(req.params.orderId);
-
-    if (!order) {
-      return res.status(404).json({ success: false });
-    }
-
-    res.json({ success: true, order });
-  } catch {
-    res.status(500).json({ success: false });
-  }
-});
+orderRouter.get("/single/:orderId", orderSuccess);
 
 export default orderRouter;

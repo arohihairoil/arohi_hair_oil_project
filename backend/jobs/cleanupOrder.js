@@ -13,9 +13,6 @@ export const cleanupUnpaidOrders = () => {
         createdAt: { $lt: cutoff },
       });
 
-      console.log(
-        `🧹 Cleaned ${result.deletedCount} unpaid orders older than 48 hours`
-      );
     } catch (error) {
       console.error("❌ Error cleaning unpaid orders:", error.message);
     }

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
@@ -42,17 +42,12 @@ const OrderSuccess = () => {
   }
 
   if (!order) {
-    return (
-      <p className="text-center mt-20 text-red-500">
-        Order not found
-      </p>
-    );
+    return <p className="text-center mt-20 text-red-500">Order not found</p>;
   }
 
   return (
     <div className="min-h-[70vh] flex justify-center items-center px-4">
       <div className="max-w-2xl w-full border p-6 rounded-lg shadow">
-
         <h1 className="text-2xl font-bold text-green-600 mb-4">
           🎉 Order Successful
         </h1>
@@ -69,10 +64,7 @@ const OrderSuccess = () => {
         {/* PRODUCTS */}
         <div className="border-t pt-4">
           {order.items.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-between text-sm mb-2"
-            >
+            <div key={index} className="flex justify-between text-sm mb-2">
               <span>
                 {item.name} × {item.quantity}
               </span>

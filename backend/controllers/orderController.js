@@ -21,78 +21,6 @@ const razorpayInstance = new razorpay({
 /* ===========================
    PLACE ORDER (RAZORPAY)
 =========================== */
-
-// const placeOrderRazorpay = async (req, res) => {
-//   try {
-//     const { items, address } = req.body;
-
-//     /* ---------------- VALIDATIONS ---------------- */
-//     if (!items || items.length === 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "No items in order",
-//       });
-//     }
-
-//     if (!address || !address.email || !address.phone) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid address details",
-//       });
-//     }
-
-//     /* ---------------- RE-CALCULATE AMOUNT (SECURE) ---------------- */
-//     let serverAmount = 0;
-
-//     for (const item of items) {
-//       const product = await productModel.findById(item.productId);
-
-//       if (!product) {
-//         return res.status(400).json({
-//           success: false,
-//           message: "Invalid product",
-//         });
-//       }
-
-//       serverAmount += product.price * item.quantity;
-//     }
-
-//     /* ---------------- CREATE ORDER IN DB ---------------- */
-//     const newOrder = await orderModel.create({
-//       items,
-//       address,
-//       email: address.email, // ✅ store email separately
-//       amount: serverAmount,
-//       status: "Order Placed", // ✅ initial status
-//       paymentMethod: "Razorpay",
-//       payment: false,
-//     });
-
-//     /* ---------------- CREATE RAZORPAY ORDER ---------------- */
-//     const razorpayOrder = await razorpayInstance.orders.create({
-//       amount: serverAmount * 100, // paise
-//       currency: "INR",
-//       receipt: newOrder._id.toString(),
-//     });
-
-//     /* ---------------- SAVE RAZORPAY ORDER ID ---------------- */
-//     newOrder.razorpayOrderId = razorpayOrder.id;
-//     await newOrder.save();
-
-//     /* ---------------- RESPONSE ---------------- */
-//     res.json({
-//       success: true,
-//       order: razorpayOrder,
-//       orderId: newOrder._id, // useful for retry
-//     });
-//   } catch (error) {
-//     console.error("❌ placeOrderRazorpay error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Order creation failed",
-//     });
-//   }
-// };
 const placeOrderRazorpay = async (req, res) => {
   try {
     const { items, address } = req.body;
@@ -406,7 +334,6 @@ const allOrders = async (req, res) => {
       totalPages: Math.ceil(totalOrders / limit),
     });
   } catch (error) {
-    console.log(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -501,6 +428,20 @@ const updateStatus = async (req, res) => {
     });
   }
 };
+const orderSuccess = async (req, res) => {
+  try {
+    const order = await orderModel.findById(req.params.orderId);
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ success: false });
+    }
+
+    res.json({ success: true, order });
+  } catch {
+    res.status(500).json({ success: false });
+  }
+};
 
 /* ===========================
    EXPORTS
@@ -511,4 +452,5 @@ export {
   allOrders,
   userOrders,
   updateStatus,
+  orderSuccess,
 };
