@@ -22,6 +22,8 @@ import Disclaimer from "./pages/Disclaimer";
 import Error from "./components/Error";
 import CancellationAndRefundPolicy from "./pages/CancellationAndRefundPolicy";
 import ShippingAndDeliveryPolicy from "./pages/ShippingAndDeliveryPolicy";
+import OrderSuccess from "./pages/OrderSuccess";
+
 const App = () => {
   return (
     <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
@@ -32,13 +34,13 @@ const App = () => {
       <Routes>
         {/* Main Pages */}
         <Route path="/" element={<Home />} />
-
         <Route path="/collection" element={<Collection />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/place-order" element={<PlaceOrder />} />
+        <Route path="single/:orderID" element={<OrderSuccess />} />
         <Route path="/orders" element={<Orders />} />
 
         {/* ✅ Policy Pages (Razorpay-ready) */}

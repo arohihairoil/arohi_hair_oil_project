@@ -58,10 +58,9 @@ const PlaceOrder = () => {
             }
           );
 
-          if (data.success) {
+          if (data.success && data.orderId) {
             setCartItems({});
-            toast.success("Order placed successfully");
-            navigate("/");
+            navigate(`/single/${data.orderId}`);
           } else {
             toast.error("Payment verification failed");
           }
