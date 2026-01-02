@@ -51,7 +51,11 @@ const PlaceOrder = () => {
         try {
           const { data } = await axios.post(
             `${backendUrl}/api/order/verifyRazorpay`,
-            response
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }
           );
 
           if (data.success) {
@@ -61,7 +65,7 @@ const PlaceOrder = () => {
           } else {
             toast.error("Payment verification failed");
           }
-        } catch {
+        } catch (error) {
           toast.error("Payment verification failed");
         }
       },
@@ -71,100 +75,6 @@ const PlaceOrder = () => {
     rzp.open();
   };
 
-  /* ---------------- PLACE ORDER (GUEST) ---------------- */
-  // const onSubmitHandler = async (e) => {
-  //   e.preventDefault();
-
-  //   let orderItems = [];
-
-  //   for (const productId in cartItems) {
-  //     const quantity = cartItems[productId];
-  //     if (quantity > 0) {
-  //       const product = products.find((p) => p._id === productId);
-  //       if (product) {
-  //         orderItems.push({
-  //           productId: product._id,
-  //           name: product.name,
-  //           image: product.image,
-  //           price: product.price,
-  //           quantity,
-  //         });
-  //       }
-  //     }
-  //   }
-
-  //   if (orderItems.length === 0) {
-  //     toast.error("Your cart is empty");
-  //     return;
-  //   }
-
-  //   const orderData = {
-  //     address: formData,
-  //     items: orderItems,
-  //     amount: getCartAmount() + delivery_fee,
-  //   };
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${backendUrl}/api/order/razorpay`,
-  //       orderData
-  //     );
-
-  //     if (!response.data.success) {
-  //       initPay(response.data.order);
-  //     } else {
-  //       toast.error(response.data.message || "Order failed");
-  //     }
-  //   } catch {
-  //     toast.error("Order placement failed");
-  //   }
-  // };
-
-  // const onSubmitHandler = async (e) => {
-  //   e.preventDefault();
-
-  //   let orderItems = [];
-
-  //   for (const productId in cartItems) {
-  //     const quantity = cartItems[productId];
-  //     if (quantity > 0) {
-  //       const product = products.find((p) => p._id === productId);
-  //       if (product) {
-  //         orderItems.push({
-  //           productId: product._id,
-  //           name: product.name,
-  //           image: product.image,
-  //           price: product.price,
-  //           quantity,
-  //         });
-  //       }
-  //     }
-  //   }
-
-  //   if (orderItems.length === 0) {
-  //     toast.error("Your cart is empty");
-  //     return;
-  //   }
-
-  //   const orderData = {
-  //     address: formData,
-  //     items: orderItems,
-  //     amount: getCartAmount() + delivery_fee,
-  //   };
-
-  //   const response = await axios.post(
-  //     `${backendUrl}/api/order/razorpay`,
-  //     orderData
-  //   );
-  //   console.log("ORDER API RESPONSE 👉", response.data);
-
-  //   if (response.data.success) {
-  //     // ✅ OPEN RAZORPAY
-  //     initPay(response.data.order);
-  //   } else {
-  //     toast.error(response.data.message || "Order failed");
-  //   }
-  // };
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 

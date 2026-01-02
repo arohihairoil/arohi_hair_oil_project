@@ -1,6 +1,8 @@
 import orderModel from "../models/orderModel.js";
 import razorpay from "razorpay";
 import { sendOrderSuccessEmail } from "../utils/sendOrderEmail.js";
+import productModel from "../models/productModel.js";
+import { createHmac } from "crypto";
 
 /* ===========================
    GLOBALS
@@ -20,12 +22,11 @@ const razorpayInstance = new razorpay({
    PLACE ORDER (RAZORPAY)
 =========================== */
 
-import productModel from "../models/productModel.js";
-
 const placeOrderRazorpay = async (req, res) => {
   try {
     const { items, address } = req.body;
 
+    /* ---------------- VALIDATIONS ---------------- */
     if (!items || items.length === 0) {
       return res.status(400).json({
         success: false,
@@ -33,7 +34,14 @@ const placeOrderRazorpay = async (req, res) => {
       });
     }
 
-    // ✅ RE-CALCULATE AMOUNT ON SERVER
+    if (!address || !address.email || !address.phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid address details",
+      });
+    }
+
+    /* ---------------- RE-CALCULATE AMOUNT (SECURE) ---------------- */
     let serverAmount = 0;
 
     for (const item of items) {
@@ -49,25 +57,40 @@ const placeOrderRazorpay = async (req, res) => {
       serverAmount += product.price * item.quantity;
     }
 
-    const newOrder = new orderModel({
+    /* ---------------- CREATE ORDER IN DB ---------------- */
+    const newOrder = await orderModel.create({
       items,
       address,
+      email: address.email, // ✅ store email separately
       amount: serverAmount,
+      status: "Order Placed", // ✅ initial status
       paymentMethod: "Razorpay",
       payment: false,
     });
 
-    await newOrder.save();
-
+    /* ---------------- CREATE RAZORPAY ORDER ---------------- */
     const razorpayOrder = await razorpayInstance.orders.create({
-      amount: serverAmount * 100,
+      amount: serverAmount * 100, // paise
       currency: "INR",
       receipt: newOrder._id.toString(),
     });
 
-    res.json({ success: true, order: razorpayOrder });
+    /* ---------------- SAVE RAZORPAY ORDER ID ---------------- */
+    newOrder.razorpayOrderId = razorpayOrder.id;
+    await newOrder.save();
+
+    /* ---------------- RESPONSE ---------------- */
+    res.json({
+      success: true,
+      order: razorpayOrder,
+      orderId: newOrder._id, // useful for retry
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("❌ placeOrderRazorpay error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Order creation failed",
+    });
   }
 };
 
@@ -77,33 +100,74 @@ const placeOrderRazorpay = async (req, res) => {
 
 const verifyRazorpay = async (req, res) => {
   try {
-    const { razorpay_order_id } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
-    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
-
-    if (orderInfo.status === "paid") {
-      const order = await orderModel.findByIdAndUpdate(
-        orderInfo.receipt,
-        { payment: true },
-        { new: true }
-      );
-
-      // ✅ SEND EMAIL (NON-BLOCKING)
-      sendOrderSuccessEmail({
-        email: order.address.email,
-        orderId: order._id,
-        amount: order.amount,
-      }).catch((err) => console.log("Email failed:", err.message));
-
-      return res.json({
-        success: true,
-        message: "Payment Successful",
+    // 1️⃣ Validate
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment data",
       });
     }
 
-    res.json({ success: false, message: "Payment Failed" });
+    // 2️⃣ VERIFY SIGNATURE (CRITICAL)
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSignature = createHmac(
+      "sha256",
+      process.env.RAZORPAY_KEY_SECRET
+    )
+      .update(body)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+
+    // 3️⃣ Fetch Razorpay order
+    const razorpayOrder = await razorpayInstance.orders.fetch(
+      razorpay_order_id
+    );
+
+    // 4️⃣ Update DB order (receipt = orderId)
+    const order = await orderModel.findByIdAndUpdate(
+      razorpayOrder.receipt,
+      {
+        payment: true,
+        status: "Order Placed",
+      },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // 5️⃣ Send success email
+    sendOrderSuccessEmail({
+      email: order.address.email,
+      orderId: order._id,
+      amount: order.amount,
+      items: order.items,
+    }).catch((err) => console.log("Email failed:", err.message));
+
+    return res.json({
+      success: true,
+      message: "Payment verified successfully",
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Verify Razorpay Error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -164,12 +228,35 @@ const updateStatus = async (req, res) => {
   try {
     const { orderId, status } = req.body;
 
-    await orderModel.findByIdAndUpdate(orderId, { status });
+    const order = await orderModel.findById(orderId);
 
-    res.json({ success: true, message: "Status Updated" });
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    order.status = status;
+    await order.save();
+
+    // ✅ SEND EMAIL BASED ON STATUS (NON-BLOCKING)
+    sendOrderStatusEmail({
+      email: order.email || order.address.email,
+      orderId: order._id,
+      status: order.status,
+      items: order.items,
+    }).catch((err) => console.log("Status email failed:", err.message));
+
+    res.json({
+      success: true,
+      message: "Order status updated",
+    });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
