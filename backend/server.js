@@ -25,7 +25,7 @@ app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
-cleanupUnpaidOrders();
+//cleanupUnpaidOrders();
 
 app.get("/", (req, res) => {
   res.send("API Working");
