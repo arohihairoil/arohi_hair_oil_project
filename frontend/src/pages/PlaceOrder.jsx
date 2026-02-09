@@ -215,7 +215,7 @@ const PlaceOrder = () => {
           name="phone"
           onChange={onChangeHandler}
           className="border rounded py-1.5 px-3.5 w-full"
-          placeholder="Phone"
+          placeholder="Mobile Number"
         />
       </div>
 
